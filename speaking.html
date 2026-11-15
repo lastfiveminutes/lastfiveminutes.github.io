@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rewind Speaking Show · The Last Five Minutes</title>
+<meta name="description" content="A team speaking game show for the live class, based on the story The Last Five Minutes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0d1220">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/speaking.css">
+</head>
+<body>
+<div class="bar">
+  <div class="wrap">
+    <a class="brand" href="index.html" title="All games">The Last Five Minutes · Speaking</a>
+    <span class="chip tchip" id="tChip"><span id="tLabel">Turn clock</span> <b id="tTime">--</b></span>
+    <span class="chip">Round <b id="roundN">1</b></span>
+    <button class="ghost" id="endGame" type="button" hidden>Finish game</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <h1>Rewind! <span>Speaking show</span></h1>
+      <p>A team game for the live class. Share this screen in Meet or Zoom. Teams take turns: one student speaks, and the class can shout <strong>"REWIND!"</strong> when they hear a mistake.</p>
+      <p>Each team has <strong>one Rewind token</strong> to change a card they don't like.</p>
+    </div>
+  </header>
+
+  <section class="gate" id="setup">
+    <h2>Set up the teams</h2>
+    <ul class="rules">
+      <li><b>Rewind! challenge:</b> talk about a topic card for 60 seconds. Every "REWIND!" restarts the clock. Three rewinds and the turn is lost.</li>
+      <li><b>Hot seat:</b> a student becomes a character and answers the class's questions in 90 seconds.</li>
+      <li>The clock is mandatory. A turn has no points until the clock starts, and it can't be paused.</li>
+    </ul>
+    <div class="teams-in" id="teamsIn"></div>
+    <div class="row">
+      <button class="btn line" id="addTeam" type="button">+ Add team</button>
+      <button class="btn line" id="delTeam" type="button">− Remove team</button>
+      <button class="btn red" id="startGame" type="button">Start the game</button>
+    </div>
+  </section>
+
+  <section class="panel" id="boardSec" hidden>
+    <div class="phase-tag">Leaderboard</div>
+    <div class="board" id="board" style="margin-top:10px"></div>
+  </section>
+
+  <section class="panel" id="stage" hidden style="margin-top:18px"></section>
+
+  <section class="panel" id="voteSec" hidden style="margin-top:18px">
+    <h3 style="margin-top:0">Class vote · Was Daniela right?</h3>
+    <p class="lead">Vote at the start and at the end of the class. Did anybody change their mind?</p>
+    <div class="vote" id="vote"></div>
+    <div class="row" style="margin-top:10px"><button class="ghost" id="voteReset" type="button">Reset vote</button></div>
+  </section>
+
+  <section class="result" id="final" hidden></section>
+</div>
+
+<div class="flash" id="flash"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="modal-box">
+    <h3 id="mTitle">Sure?</h3>
+    <p id="mText"></p>
+    <div class="row">
+      <button class="btn red" id="mYes" type="button">Yes</button>
+      <button class="btn line" id="mNo" type="button">No</button>
+    </div>
+  </div>
+</div>
+<script src="js/speaking.js"></script>
+</body>
+</html>

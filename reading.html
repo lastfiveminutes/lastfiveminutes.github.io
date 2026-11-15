@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escape the House · The Last Five Minutes</title>
+<meta name="description" content="Daniela is inside Dr. Vargas's house, and the doctor can come back at any moment. Read each part of the story to open the doors. Find the secret word before the clock stops.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0d1220">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="reading">
+<div class="bar">
+  <div class="wrap">
+    <a class="brand" href="index.html" title="All games">The Last Five Minutes · Reading</a>
+    <span class="chip tchip" id="tChip"><span id="tLabel">Clock</span> <b id="tTime">--:--</b></span>
+    <span class="chip" id="playerChip" hidden><span id="playerName"></span></span>
+    <span class="chip">Score <b id="score">0</b></span>
+    <span class="chip" id="tokenChip"><span class="token-dot"></span><span id="tokenText">Rewind ready</span></span>
+    <button class="ghost" id="restart" type="button" hidden>Start over</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <h1>Escape <span>the house</span></h1>
+      <p>Daniela is inside Dr. Vargas's house, and the doctor can come back at any moment. Read each part of the story to open the doors.</p><p>Find the secret word before the clock stops.</p>
+    </div>
+    <div class="dial-box" aria-hidden="true">
+      <div class="dial" id="dial"><div class="dial-face"><div><div class="dial-time" id="dialTime">--:--</div><div class="dial-label" id="dialLabel">Mission clock</div></div></div></div>
+    </div>
+  </header>
+
+  <section class="gate" id="gate">
+    <h2>Before you start</h2>
+    <ul><li><b>5 minutes</b> for the whole game. The clock starts when you press the button, and you can't pause it.</li><li><b>5 rooms</b>, 2 questions in each room. You can't go back to a room.</li><li><b>One try</b> for each question. You have <b>one Rewind</b> to try a question again.</li><li>Stay on this page. Your teacher can see if you leave it.</li></ul>
+    <form id="gateForm">
+      <label for="nameIn" class="sr">Your full name</label>
+      <input type="text" id="nameIn" placeholder="Write your full name" autocomplete="off" maxlength="40">
+      <button class="btn red" id="startBtn" type="submit" disabled>Start the clock</button>
+    </form>
+    <p class="meta" id="attemptNote"></p>
+  </section>
+
+  <section class="gate" id="doneCard" hidden>
+    <h2>You finished this game</h2>
+    <p class="meta" id="doneMeta"></p>
+    <div class="row">
+      <button class="btn red" id="againTop" type="button">Play again</button>
+      <button class="btn line" id="seeResult" type="button">See my result</button>
+    </div>
+  </section>
+
+  <section class="panel" id="roomWrap" data-first>
+    <h2>The house</h2>
+    <p class="lead">Each room has a piece of the story and two questions. When you answer both, the door opens and you get a letter. You can't go back to a room. You get one try for each question.</p>
+    <div class="row" style="margin-bottom:14px"><span class="chip" id="progress">0 / 10 answered</span></div>
+    <div class="doors" id="doors"></div>
+    <div id="room"></div>
+  </section>
+  <section class="result" id="result" hidden></section>
+</div>
+
+<div class="flash" id="flash"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="modal-box">
+    <h3 id="mTitle">Wrong!</h3>
+    <p id="mText"></p>
+    <div class="row">
+      <button class="btn red" id="mYes" type="button">Yes</button>
+      <button class="btn line" id="mNo" type="button">No</button>
+    </div>
+  </div>
+</div>
+<script src="js/common.js"></script>
+<script src="js/reading.js"></script>
+<script src="js/boot.js"></script>
+</body>
+</html>

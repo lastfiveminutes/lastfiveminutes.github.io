@@ -1,0 +1,15 @@
+/* home page only (loaded after style.css) */
+.games{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:8px}
+.game{display:grid;gap:6px;align-content:start;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 24px;color:var(--text);text-decoration:none;position:relative;transition:border-color .15s,transform .15s}
+.game:hover{border-color:var(--alarm);transform:translateY(-2px)}
+.game:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+.game .num{position:absolute;top:18px;right:22px;font-family:var(--font-display);font-weight:900;font-size:34px;line-height:1;color:var(--line)}
+.game:hover .num{color:var(--alarm)}
+.game .skill{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--alarm);font-weight:700}
+.game .name{font-family:var(--font-display);font-weight:900;text-transform:uppercase;font-size:34px;line-height:1;padding-right:44px}
+.game .desc{color:var(--muted)}
+.game .meta-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.game .meta-row span{border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:14px;color:var(--steel)}
+.foot{color:var(--muted);font-size:15px;margin-top:22px}
+@media (max-width:760px){.games{grid-template-columns:1fr}}
+@media (max-width:560px){.home .brand{display:block;font-size:16px}}
