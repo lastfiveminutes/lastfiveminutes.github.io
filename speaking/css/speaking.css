@@ -59,3 +59,8 @@ body[data-page="speaking"] .wrap{max-width:1240px}
   .show-side h3{font-size:22px}
   .running #voteSec{opacity:.45}
 }
+
+/* v5: poster serif for the show titles */
+.turn,.charcard,.podium .first{font-family:var(--font-title);text-transform:none;font-weight:700;letter-spacing:0}
+.turn{font-size:clamp(38px,6vw,60px);line-height:1}
+.topic{font-family:var(--font-title);font-weight:700;font-size:34px;line-height:1.1}

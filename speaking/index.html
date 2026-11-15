@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rewind Speaking Show · The Last Five Minutes</title>
+<meta name="description" content="A team speaking game show for the live class, based on the story The Last Five Minutes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0d1220">
+<meta property="og:title" content="Rewind Speaking Show · The Last Five Minutes">
+<meta property="og:image" content="https://lastfiveminutes.github.io/speaking/img/poster.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/speaking.css">
+</head>
+<body data-page="speaking">
+<div class="bar">
+  <div class="wrap">
+    <span class="brand"><span class="brand-txt"><span class="brand-pre">The Last Five Minutes · </span><em>Speaking</em></span></span>
+    <span class="chip tchip" id="tChip"><span id="tLabel">Turn clock</span> <b id="tTime">--</b></span>
+    <span class="chip">Round <b id="roundN">1</b></span>
+    <button class="ghost" id="endGame" type="button" hidden aria-label="Finish game"><span class="ico" aria-hidden="true">&#9873;</span><span class="lbl">Finish game</span></button>
+  </div>
+  <span class="tline" aria-hidden="true"></span>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="hero-text">
+      <p class="kicker">The Last Five Minutes</p>
+      <h1>Rewind! <span>Speaking show</span></h1>
+      <p class="tagline">&ldquo;You cannot control every situation, but you can choose how to face it.&rdquo;</p>
+      <p>A team game for the live class. Share this screen in Meet or Zoom. Teams take turns: one student speaks, and the class can shout <strong>"REWIND!"</strong> when they hear a mistake.</p>
+      <p>Each team has <strong>one Rewind token</strong> to change a card they don't like.</p>
+    </div>
+    <figure class="poster">
+      <img src="img/poster.jpg" alt="Poster: Daniela in a car reads a message from the hospital while her mother hugs her outside." width="800" height="1200" fetchpriority="high">
+      <span class="dust" aria-hidden="true"></span>
+      <figcaption class="postit">Stay.<br>Breathe.<br>Remember.</figcaption>
+    </figure>
+  </header>
+
+  <section class="gate" id="setup">
+    <h2>Set up the teams</h2>
+    <ul class="rules">
+      <li><b>Rewind! challenge:</b> talk about a topic card for 60 seconds. Every "REWIND!" restarts the clock. Three rewinds and the turn is lost.</li>
+      <li><b>Hot seat:</b> a student becomes a character and answers the class's questions in 90 seconds.</li>
+      <li>The clock is mandatory. A turn has no points until the clock starts, and it can't be paused.</li>
+    </ul>
+    <div class="teams-in" id="teamsIn"></div>
+    <div class="row">
+      <button class="btn line" id="addTeam" type="button">+ Add team</button>
+      <button class="btn line" id="delTeam" type="button">− Remove team</button>
+      <button class="btn red" id="startGame" type="button">Start the game</button>
+    </div>
+  </section>
+
+  <div class="show">
+    <main class="show-main">
+  <section class="panel" id="stage" hidden></section>
+      <section class="result" id="final" hidden></section>
+    </main>
+    <aside class="show-side" aria-label="Scores and class vote">
+  <section class="panel" id="boardSec" hidden>
+    <div class="phase-tag">Leaderboard</div>
+    <div class="board" id="board" style="margin-top:10px"></div>
+  </section>
+  <section class="panel" id="voteSec" hidden>
+    <h3 style="margin-top:0">Class vote · Was Daniela right?</h3>
+    <p class="lead">Vote at the start and at the end of the class. Did anybody change their mind?</p>
+    <div class="vote" id="vote"></div>
+    <div class="row" style="margin-top:10px"><button class="ghost" id="voteReset" type="button">Reset vote</button></div>
+  </section>
+    </aside>
+  </div>
+</div>
+
+<div class="flash" id="flash"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="modal-box">
+    <h3 id="mTitle">Sure?</h3>
+    <p id="mText"></p>
+    <div class="row">
+      <button class="btn red" id="mYes" type="button">Yes</button>
+      <button class="btn line" id="mNo" type="button">No</button>
+    </div>
+  </div>
+</div>
+<script src="js/fx.js"></script>
+<script src="js/speaking.js"></script>
+</body>
+</html>
