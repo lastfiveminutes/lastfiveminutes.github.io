@@ -54,6 +54,7 @@ function drawClock(){
   var tot=G.mode==="hot"?HOT_TIME:RW_TIME,rs=document.documentElement.style;
   rs.setProperty("--turn-p",r/tot);rs.setProperty("--clock-p",G.phase==="running"?r/tot:0);
   var tb=$("bigClock");if(tb)tb.classList.toggle("warn",G.phase==="running"&&r<=10);
+  if(G.started)FX.timer(String(r),r/tot,G.phase==="running"&&r<=10,"seconds",r,G.phase==="running");
   var c=$("bigClock");if(c)c.textContent=r;
 }
 function runClock(){clearInterval(tick);tick=setInterval(function(){drawClock();if(remaining()<=0){clearInterval(tick);tick=null;flash();timeUp()}},200);drawClock()}
@@ -102,16 +103,17 @@ function nextTurn(){
 function setMode(m){if(G.phase!=="ready")return;G.mode=m;if(m==="hot")drawHot();else drawCard();save();render()}
 function startTurn(){
   if(G.phase!=="ready")return;
-  G.phase="running";G.endAt=Date.now()+(G.mode==="hot"?HOT_TIME:RW_TIME)*1000;flash();save();render();runClock();
+  G.phase="running";G.endAt=Date.now()+(G.mode==="hot"?HOT_TIME:RW_TIME)*1000;flash();FX.play("start");save();render();runClock();
 }
 function shoutRewind(){
   if(G.phase!=="running"||G.mode!=="rewind")return;
-  G.rewinds++;flash();
+  G.rewinds++;flash();FX.play("rewind");FX.shake();
   if(G.rewinds>=MAX_RW){G.base=0;stopClock();G.phase="scoring";save();render();return}
   G.endAt=Date.now()+RW_TIME*1000;save();render();runClock();
 }
 function timeUp(){
   if(G.phase!=="running")return;
+  FX.play("door");
   if(G.mode==="rewind")G.base=Math.max(0,100-25*G.rewinds);
   else G.base=G.hot.marks.filter(function(m){return m==="good"}).length*30;
   G.phase="scoring";save();render();
@@ -119,22 +121,24 @@ function timeUp(){
 function hotMark(kind){
   if(G.phase!=="running"||G.mode!=="hot")return;
   var h=G.hot;if(h.qi>=h.qs.length)return;
-  h.marks[h.qi]=kind;h.qi++;save();
+  h.marks[h.qi]=kind;h.qi++;save();FX.play(kind==="good"?"good":"click");
   if(h.qi>=h.qs.length){G.endAt=Date.now();stopClock();timeUp();return}
   render();
 }
 function usePass(){
   var t=team();if(G.phase!=="ready"||!t.token)return;
-  t.token=false;flash();if(G.mode==="hot")drawHot();else drawCard();save();render();
+  t.token=false;flash();FX.play("rewind");if(G.mode==="hot")drawHot();else drawCard();save();render();
 }
 function bonusTotal(){var s=0;BONUS.forEach(function(b){if(G.bonus[b[0]])s+=b[2]});return s}
 function givePoints(){
   if(G.phase!=="scoring")return;
   var p=G.base+(G.base>0||G.mode==="hot"?bonusTotal():0);
+  if(p>0){FX.points(p,$("giveBtn"));FX.play("coin")}
   team().score+=p;team().turns++;G.phase="idle";flash();save();render();
 }
 
 /* ---- stage ---- */
+var lastCard="";
 function render(){
   var on=G.started&&!G.finished;
   $("setup").hidden=G.started;$("boardSec").hidden=!G.started;$("stage").hidden=!on;$("voteSec").hidden=!G.started;$("endGame").hidden=!on;
@@ -176,6 +180,8 @@ function render(){
     h+='</div></div>';
   }
   $("stage").innerHTML=h;
+  var cardKey=G.turn+"|"+G.mode+"|"+(G.mode==="hot"?(G.hot&&G.hot.char):G.card);
+  if(cardKey!==lastCard){lastCard=cardKey;var fc=document.querySelector("#stage .stage-grid .card");if(fc)fc.classList.add("flip-in")}
   var b;
   if((b=$("nextBtn")))b.onclick=nextTurn;
   document.querySelectorAll("[data-mode]").forEach(function(x){x.onclick=function(){setMode(x.getAttribute("data-mode"))}});
@@ -201,7 +207,7 @@ $("voteReset").onclick=function(){G.vote={a:0,b:0,c:0};save();renderVote()};
 /* ---- end ---- */
 $("endGame").onclick=function(){
   if(G.phase==="running"){ask("Finish the turn first","A team is speaking now. Wait for the clock to stop.",null,"OK",null,null);return}
-  ask("Finish the game?","The leaderboard will show the winners. Points that were not given yet are lost.","Yes, finish","Keep playing",function(){stopClock();G.finished=true;save();flash();render()},null);
+  ask("Finish the game?","The leaderboard will show the winners. Points that were not given yet are lost.","Yes, finish","Keep playing",function(){finalShown=false;stopClock();G.finished=true;save();flash();render()},null);
 };
 function renderFinal(){
   var order=G.teams.slice().sort(function(a,b){return b.score-a.score});
@@ -211,13 +217,15 @@ function renderFinal(){
   $("newGame").onclick=function(){var n=G.teams.map(function(t){return t.name}),v=G.vote;G=fresh(n);G.vote=v;G.started=true;save();flash();nextTurn()};
   $("editTeams").onclick=function(){names=G.teams.map(function(t){return t.name});var v=G.vote;G=fresh(names);G.vote=v;save();renderSetup();render()};
   $("final").scrollIntoView({behavior:"smooth",block:"start"});
+  if(!finalShown){finalShown=true;FX.play("win");FX.confetti(200)}
 }
+var finalShown=false;
 
 /* ---- boot ---- */
 function boot(hot){
   var s=(hot&&hot.v===VERSION)?hot:recall();
   G=(s&&s.v===VERSION)?s:fresh();
-  names=G.teams.map(function(t){return t.name});
+  names=G.teams.map(function(t){return t.name});finalShown=!!G.finished;
   renderSetup();render();
   if(G.started&&!G.finished&&G.phase==="running"){if(remaining()>0)runClock();else timeUp()}
 }

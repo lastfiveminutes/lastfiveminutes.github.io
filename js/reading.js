@@ -60,6 +60,7 @@ function qHTML(r,j){
   }
   return h+'</div>';
 }
+var shownRoom=-1;
 function renderRoom(){
   renderDoors();
   var box=$("room");
@@ -70,6 +71,7 @@ function renderRoom(){
   var h='<div class="room-tag">Room '+(r+1)+' of '+ROOMS.length+' · '+esc(room.night)+' · The '+esc(room.name.toLowerCase())+'</div><blockquote>'+esc(room.text)+'</blockquote>'+qHTML(r,0)+qHTML(r,1);
   if(roomDone(r)&&r<ROOMS.length-1&&!S.finished)h+='<div class="feedback '+(roomOk(r)?"good":"")+'">'+(roomOk(r)?"Perfect! The door opens. Letter: "+room.letter:"You forced the door open. Letter: "+room.letter)+'</div><button class="btn red" type="button" id="nextRoom">Open the next door →</button>';
   box.innerHTML=h;
+  if(r!==shownRoom){shownRoom=r;box.classList.remove('enter');void box.offsetWidth;box.classList.add('enter')}
   box.querySelectorAll(".opt[data-q]").forEach(function(b){b.onclick=function(){
     var key=b.getAttribute("data-q"),i=+b.getAttribute("data-v"),q=qOf(key);
     submit(key,q.type==="mc"?i:(i===0));
@@ -89,13 +91,18 @@ function isRight(q,v){
   if(q.type==="code")return q.ok.indexOf(v)>=0;
   if(q.type==="order")return v.join(",")===q.items.map(function(x,i){return i}).join(",");
 }
+function doorFx(key){
+  var r=+key.split("-")[0];if(!roomDone(r))return;var ok=roomOk(r),room=ROOMS[r];
+  FX.reveal({kicker:'Room '+(r+1)+' · '+esc(room.name),big:room.letter,title:ok?'The door opens!':'You forced the door',sub:ok?'You found a letter of the secret word':'You still get the letter',ok:ok});
+  FX.play(ok?'door':'bad');
+}
 function submit(key,v){
   if(S.ans[key]||S.finished||!S.started)return;
   var q=qOf(key);
-  if(isRight(q,v)){S.ans[key]={v:v,ok:true};addScore(100);pick=[];save();renderRoom();checkRoom()}
+  if(isRight(q,v)){S.ans[key]={v:v,ok:true};addScore(100);pick=[];save();renderRoom();doorFx(key);checkRoom()}
   else{
     S.ans[key]={v:v,ok:false};save();renderRoom();
-    offerRewind("Dr. Vargas heard you! That answer is wrong.",function(){delete S.ans[key];pick=[];save();renderRoom()},function(){pick=[];renderRoom();checkRoom()});
+    offerRewind("Dr. Vargas heard you! That answer is wrong.",function(){delete S.ans[key];pick=[];save();renderRoom()},function(){pick=[];renderRoom();doorFx(key);checkRoom()});
   }
 }
 function checkRoom(){
@@ -121,7 +128,7 @@ function showResult(){
       var mine=a?esc(shown(q,a.v)):"<em>no answer</em>";
       return '<li>'+esc(q.q)+'<br>Your answer: '+(a&&a.ok?'<span class="okc">✓ '+mine+'</span>':'<span class="badc">✗ '+mine+'</span> · Correct: '+esc(rightAns(q)))+'</li>'}).join("")+'</ul></div>';
   }).join("");
-  $("result").innerHTML='<div class="big">'+(S.reason==="time"?"Time's up!":"You escaped!")+'</div>'+
+  $("result").innerHTML='<div class="big">'+(S.reason==="time"?"Time's up!":"You escaped!")+'</div>'+FX.stars(correct()/TOTAL)+
     '<div class="secret">'+word+'</div>'+
     '<p>Explorer <strong>'+esc(S.name)+'</strong> · Attempt '+S.attempt+'</p>'+
     '<div class="stats"><div class="stat"><span>Correct</span><b>'+correct()+' / '+TOTAL+'</b></div><div class="stat"><span>Score</span><b>'+S.score+'</b></div><div class="stat"><span>Time used</span><b>'+mmss(used)+'</b></div><div class="stat"><span>Left the page</span><b>'+S.left+'</b></div></div>'+
@@ -130,5 +137,6 @@ function showResult(){
     '<h3>Review the answers</h3>'+rv;
   $("result").hidden=false;
   afterResult();
+  FX.finish(correct()/TOTAL,S.finishedAt);
   $("doneCard").scrollIntoView({behavior:"smooth",block:"start"});
 }

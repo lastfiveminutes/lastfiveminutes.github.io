@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Daniela's Diary · The Last Five Minutes</title>
-<meta name="description" content="Every night Daniela goes into Dr. Vargas's house. Every morning she writes in her diary. But some words are missing! Complete the diary, then write a new ending for the story.">
+<meta name="description" content="Every night Daniela goes into Dr. Vargas's house. Every morning she writes in her diary. But some words are missing! Complete the diary, then build a new ending for the story.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#0d1220">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/style.css">
@@ -29,7 +29,7 @@
   <header class="hero">
     <div>
       <h1>Daniela's <span>diary</span></h1>
-      <p>Every night Daniela goes into Dr. Vargas's house. Every morning she writes in her diary. But some words are missing!</p><p>Complete the diary, then write a new ending for the story.</p>
+      <p>Every night Daniela goes into Dr. Vargas's house. Every morning she writes in her diary. But some words are missing!</p><p>Complete the diary, then build a new ending for the story, word by word.</p>
     </div>
     <div class="dial-box" aria-hidden="true">
       <div class="dial" id="dial"><div class="dial-face"><div><div class="dial-time" id="dialTime">--:--</div><div class="dial-label" id="dialLabel">Mission clock</div></div></div></div>
@@ -38,7 +38,7 @@
 
   <section class="gate" id="gate">
     <h2>Before you start</h2>
-    <ul><li><b>Mission 1:</b> 3 minutes to complete the diary. <b>One try</b> for each verb, and <b>one Rewind</b> for the whole game.</li><li><b>Mission 2:</b> 5 minutes to write your story. When the clock reaches zero, the story is sent automatically.</li><li>The clock can't be paused, and you can't paste text. Write with your own words.</li><li>Stay on this page. Your teacher can see if you leave it.</li></ul>
+    <ul><li><b>Mission 1:</b> 3 minutes to complete the diary. <b>One try</b> for each verb, and <b>one Rewind</b> for the whole game.</li><li><b>Mission 2:</b> 5 minutes to build 5 sentences of a new ending. Tap the words in order. Careful: each sentence has <b>one trap word</b>!</li><li>The clock can't be paused. When it reaches zero, the mission closes.</li><li>Stay on this page. Your teacher can see if you leave it.</li></ul>
     <form id="gateForm">
       <label for="nameIn" class="sr">Your full name</label>
       <input type="text" id="nameIn" placeholder="Write your full name" autocomplete="off" maxlength="40">
@@ -61,29 +61,23 @@
   <section class="panel game-area" id="diarySec" data-first>
     <div class="phase-tag" id="diaryTag">Locked</div>
     <h2>Mission 1 · Complete the diary</h2>
-    <p class="lead">Write the past simple of each verb and press "Check" (or Enter). You get one try for each verb. Each correct verb gives you 20 points.</p>
-    <div class="row" style="margin-bottom:12px"><span class="chip" id="diaryProg">0 / 10 verbs</span></div>
+    <p class="lead">Write the <b>past simple</b> of the verb under each gap and press "Check" (or Enter). One try for each verb. Each correct verb gives you 20 points.</p>
+    <div class="progress-row"><span class="chip" id="diaryProg">0 / 10 verbs</span><div class="pbar" aria-hidden="true"><i id="diaryBar"></i></div></div>
     <div class="diary">
       <p class="date">Dear Diary, this is what happened this week...</p>
       <ol id="diaryList"></ol>
     </div>
-    <div class="row" style="margin-top:14px"><button class="btn" id="diaryNext" type="button">I finished · go to Mission 2</button></div>
+    <div class="row" style="margin-top:16px"><button class="btn" id="diaryNext" type="button">I finished · go to Mission 2 →</button></div>
   </section>
 
-  <section class="panel game-area" id="storySec">
-    <div class="phase-tag" id="storyTag">Locked</div>
+  <section class="panel game-area" id="buildSec">
+    <div class="phase-tag" id="buildTag">Locked</div>
     <h2>Mission 2 · What if the watch didn't break?</h2>
-    <p class="lead">Write a new ending for the story in 5 minutes. Write at least 30 words. Each mission word gives you 10 points, and 50 words or more give you 30 extra points. When the clock reaches zero, your story is sent automatically.</p>
-    <div class="starter">The watch flies across the room, but it doesn't break. Daniela picks it up and presses the crown. Flash...</div>
-    <div class="chips" id="mWords"></div>
-    <textarea id="story" aria-label="Your story" placeholder="Continue the story here..." spellcheck="false" autocomplete="off"></textarea>
-    <p class="nopaste" id="pasteMsg" aria-live="polite"></p>
-    <div class="row" style="margin-top:6px">
-      <button class="btn red" id="storySubmit" type="button">Submit my story</button>
-      <span class="note" id="wc">0 words</span>
-    </div>
-    <div class="meter" aria-hidden="true"><i id="wcBar"></i><span class="mark" title="30 words"></span></div>
-    <div class="feedback" id="storyFb"></div>
+    <p class="lead">Build the new ending. Tap the words in the right order to make each sentence. <b>One word in each sentence is a trap</b>: it is not in the past simple, so don't use it! One try for each sentence. Each correct sentence gives you 30 points.</p>
+    <div class="starter">The watch flies across the room, but it doesn't break. Daniela looks at it. Flash...</div>
+    <div class="bdots" id="bDots" aria-label="Sentences"></div>
+    <div id="builder" aria-live="polite"></div>
+    <div class="ending-box"><div class="room-tag">The new ending</div><p class="ending" id="ending"></p></div>
   </section>
   <section class="result" id="result" hidden></section>
 </div>
@@ -99,6 +93,7 @@
     </div>
   </div>
 </div>
+<script src="js/fx.js"></script>
 <script src="js/common.js"></script>
 <script src="js/writing.js"></script>
 <script src="js/boot.js"></script>

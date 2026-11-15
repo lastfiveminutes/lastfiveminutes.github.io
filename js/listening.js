@@ -20,6 +20,7 @@ var EVIDENCE = [
        {q:"How many units does she use?", opts:["Twelve","Fourteen","Twenty","Forty"], a:2},
        {q:"What does she say at the end?", opts:["Everybody will know","Nobody will ever know","Nobody can help","I will never know"], a:1}]}
 ];
+var EV_ICON=["\uD83D\uDCDE","\uD83C\uDFE5","\uD83C\uDFAC"];
 var TOTAL=0;EVIDENCE.forEach(function(e){TOTAL+=e.qs.length});
 
 function fresh(){return {v:VERSION,name:"",attempt:0,started:false,finished:false,reason:"",score:0,token:true,plays:{},ans:{},left:0,endAt:0,startedAt:0,finishedAt:0}}
@@ -69,7 +70,7 @@ function renderEvidence(){
     }).join("");
     var status=playing===k?'<span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Playing...':(synth?(left>0?"Plays left: <b>"+left+"</b>":"No plays left"):"");
     var fallback=!synth?'<div class="transcript on">'+ev.lines.map(function(l){return '<p><b>'+esc(l.who)+':</b> '+esc(l.t)+'</p>'}).join("")+'</div>':"";
-    return '<div class="evidence'+(playing===k?' is-playing':'')+(done===ev.qs.length?' is-done':'')+'"><div class="ev-head"><h4>'+esc(ev.title)+' <span class="ev-count">'+done+' / '+ev.qs.length+'</span></h4>'+
+    return '<div class="evidence'+(playing===k?' is-playing':'')+(done===ev.qs.length?' is-done':'')+'"><div class="ev-head"><span class="ev-ico" aria-hidden="true">'+EV_ICON[k]+'</span><h4>'+esc(ev.title)+' <span class="ev-count">'+done+' / '+ev.qs.length+'</span></h4>'+
       (synth?'<span class="plays">'+status+'</span><button class="play" type="button" data-play="'+k+'" aria-label="Play '+esc(ev.title)+'"'+(!live||playing>=0||left<=0?" disabled":"")+'>▶</button>':'')+
       '</div><div class="speaking" id="spk'+k+'"></div>'+fallback+
       (live&&!heard(k)?'<p class="lockmsg">🔒 Press ▶ and listen first. Then the 3 questions appear.</p>':'')+(showQs?qs:'')+'</div>';
@@ -81,12 +82,13 @@ function renderEvidence(){
 function answer(k,j,i){
   var key=k+"-"+j,q=EVIDENCE[k].qs[j];
   if(S.ans[key]||S.finished||!heard(k))return;
-  if(i===q.a){S.ans[key]={p:i,ok:true};addScore(100);save();renderEvidence();checkDone()}
+  if(i===q.a){S.ans[key]={p:i,ok:true};addScore(100);save();renderEvidence();solvedFx(k);checkDone()}
   else{
     S.ans[key]={p:i,ok:false};save();renderEvidence();
-    offerRewind("That is not the correct answer.",function(){delete S.ans[key];save();renderEvidence()},checkDone);
+    offerRewind("That is not the correct answer.",function(){delete S.ans[key];save();renderEvidence()},function(){solvedFx(k);checkDone()});
   }
 }
+function solvedFx(k){var n=0;EVIDENCE[k].qs.forEach(function(q,j){if(S.ans[k+"-"+j])n++});if(n===EVIDENCE[k].qs.length&&answered()<TOTAL)FX.play("coin")}
 function checkDone(){if(answered()===TOTAL&&!S.finished)finish("done")}
 
 /* ---- flow ---- */
@@ -108,7 +110,7 @@ function showResult(){
         var mine=a?esc(q.opts[a.p]):"<em>no answer</em>";
         return '<li>'+esc(q.q)+' <br>Your answer: '+(a&&a.ok?'<span class="okc">✓ '+mine+'</span>':'<span class="badc">✗ '+mine+'</span> · Correct: '+esc(q.opts[q.a]))+'</li>'}).join("")+'</ul></div>';
   }).join("");
-  $("result").innerHTML='<div class="big">'+(S.reason==="time"?"Time's up!":"Case closed!")+'</div>'+
+  $("result").innerHTML='<div class="big">'+(S.reason==="time"?"Time's up!":"Case closed!")+'</div>'+FX.stars(ok/TOTAL)+
     '<p>Detective <strong>'+esc(S.name)+'</strong> · Attempt '+S.attempt+'</p>'+
     '<div class="stats"><div class="stat"><span>Correct</span><b>'+ok+' / '+TOTAL+'</b></div><div class="stat"><span>Score</span><b>'+S.score+'</b></div><div class="stat"><span>Time used</span><b>'+mmss(used)+'</b></div><div class="stat"><span>Left the page</span><b>'+S.left+'</b></div></div>'+
     '<p class="meta">Rewind: '+(S.token?"not used":"used")+' · Finished: '+fmtDate(S.finishedAt)+'</p>'+
@@ -117,5 +119,6 @@ function showResult(){
     '<h3>Review the answers</h3>'+rv;
   $("result").hidden=false;
   afterResult();
+  FX.finish(ok/TOTAL,S.finishedAt);
   $("doneCard").scrollIntoView({behavior:"smooth",block:"start"});
 }

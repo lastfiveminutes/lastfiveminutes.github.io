@@ -11,7 +11,7 @@ function mmss(s){s=Math.max(0,s);var m=Math.floor(s/60),x=s%60;return (m<10?"0":
 function fmtDate(ts){try{return new Date(ts).toLocaleString()}catch(e){return ""}}
 
 function renderScore(pop){var el=$("score");el.textContent=S.score;if(pop){el.classList.remove("score-pop");void el.offsetWidth;el.classList.add("score-pop")}}
-function addScore(n){S.score=Math.max(0,S.score+n);renderScore(true)}
+function addScore(n){S.score=Math.max(0,S.score+n);renderScore(true);if(n>0){FX.points(n);FX.play("good")}}
 function renderToken(){$("tokenChip").classList.toggle("token-used",!S.token);$("tokenText").textContent=S.token?"Rewind ready":"Rewind used"}
 function pageState(){var b=document.body;b.classList.toggle("started",!!(S&&S.started));b.classList.toggle("finished",!!(S&&S.finished))}
 function flash(){var f=$("flash");f.classList.remove("go");void f.offsetWidth;f.classList.add("go")}
@@ -29,9 +29,10 @@ function closeModal(){$("modal").classList.remove("on");mYes=mNo=null}
 $("mYes").onclick=function(){var f=mYes;closeModal();if(f)f()};
 $("mNo").onclick=function(){var f=mNo;closeModal();if(f)f()};
 function offerRewind(text,onRetry,onKeep){
+  FX.play("bad");FX.shake();
   if(!S.token){ask("Wrong!",text+" You have no Rewind left, so this answer stays wrong.",null,"Continue",null,onKeep);return}
   ask("Wrong!",text+" Do you want to use your only Rewind and try again?","Use my Rewind","No, continue",
-    function(){S.token=false;renderToken();flash();save();onRetry()},onKeep);
+    function(){S.token=false;renderToken();flash();FX.play("rewind");save();onRetry()},onKeep);
 }
 
 /* ---- clock: based on real time, cannot be paused ---- */
@@ -43,6 +44,7 @@ function drawClock(sec,label){
   $("tChip").classList.toggle("warn",sec>0&&sec<=60&&!!tick);
   $("dial").style.setProperty("--p",clockTotal?sec/clockTotal:1);
   document.documentElement.style.setProperty("--clock-p",clockTotal&&tick?sec/clockTotal:0);
+  FX.timer(mmss(sec),clockTotal?sec/clockTotal:1,sec<=60&&!!tick,label||null,sec,!!tick);
 }
 function stopClock(){clearInterval(tick);tick=null;$("tChip").classList.remove("warn");document.documentElement.style.setProperty("--clock-p",0)}
 function runClock(total,label,onEnd){
@@ -75,7 +77,7 @@ $("gateForm").onsubmit=function(e){
   if(n.length<2){$("nameIn").focus();return}
   S=fresh();S.name=n;S.attempt=attempts()+1;store("-attempts",S.attempt);
   S.started=true;S.startedAt=Date.now();
-  hideGate();renderScore();renderToken();flash();onStart();save();
+  hideGate();renderScore();renderToken();flash();FX.play("start");onStart();save();
   var first=document.querySelector("[data-first]");if(first)first.scrollIntoView({behavior:"smooth",block:"start"});
 };
 document.addEventListener("visibilitychange",function(){if(document.hidden&&S&&S.started&&!S.finished){S.left++;save()}});
