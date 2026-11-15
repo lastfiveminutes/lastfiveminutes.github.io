@@ -41,7 +41,9 @@ var FX = (function () {
     var bar = document.querySelector(".bar .wrap"); if (!bar || document.getElementById("sndBtn")) return;
     var b = document.createElement("button");
     b.type = "button"; b.className = "ghost snd"; b.id = "sndBtn";
-    function draw() { b.textContent = on ? "🔊" : "🔇"; b.setAttribute("aria-pressed", String(on)); b.setAttribute("aria-label", on ? "Sound on" : "Sound off"); b.title = on ? "Sound on" : "Sound off"; }
+    var ICON_ON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+    var ICON_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+    function draw() { b.innerHTML = on ? ICON_ON : ICON_OFF; b.setAttribute("aria-pressed", String(on)); b.setAttribute("aria-label", on ? "Sound on" : "Sound off"); b.title = on ? "Sound on" : "Sound off"; }
     b.onclick = function () { on = !on; try { localStorage.setItem(SOUND_KEY, on ? "on" : "off"); } catch (e) {} draw(); if (on) play("click"); };
     draw();
     var before = bar.querySelector("#restart, #endGame");
@@ -85,9 +87,27 @@ var FX = (function () {
     setTimeout(function () { s.remove(); }, 1200);
   }
 
+  /* ---------- broken glass ---------- */
+  function crack(at) {
+    if (reduce) return;
+    var r = at && at.getBoundingClientRect ? at.getBoundingClientRect() : null;
+    var cx = r && r.width ? r.left + r.width / 2 : innerWidth / 2, cy = r && r.height ? r.top + r.height / 2 : innerHeight / 2;
+    var d = "", n = 11, R = Math.max(innerWidth, innerHeight) * .45;
+    for (var i = 0; i < n; i++) {
+      var a = (i / n) * Math.PI * 2 + Math.random() * .4, x = cx, y = cy, len = 0;
+      d += "M" + x.toFixed(1) + " " + y.toFixed(1);
+      while (len < R * (.55 + Math.random() * .45)) { var st = 18 + Math.random() * 34; len += st; a += (Math.random() - .5) * .35; x += Math.cos(a) * st; y += Math.sin(a) * st; d += "L" + x.toFixed(1) + " " + y.toFixed(1); }
+    }
+    [26, 58].forEach(function (rad) { var k = 9, s2 = ""; for (var j = 0; j <= k; j++) { var b = j / k * Math.PI * 2, rr = rad * (.8 + Math.random() * .4); s2 += (j ? "L" : "M") + (cx + Math.cos(b) * rr).toFixed(1) + " " + (cy + Math.sin(b) * rr).toFixed(1); } d += s2; });
+    var ns = "http://www.w3.org/2000/svg", svg = document.createElementNS(ns, "svg"), p = document.createElementNS(ns, "path");
+    svg.setAttribute("class", "fx-crack"); svg.setAttribute("aria-hidden", "true"); p.setAttribute("d", d); svg.appendChild(p);
+    document.body.appendChild(svg); setTimeout(function () { svg.remove(); }, 950);
+  }
+
   /* ---------- shake ---------- */
   function shake() {
     if (reduce) return;
+    crack(document.activeElement);
     var w = document.querySelector("body > .wrap"); if (!w) return;
     w.classList.remove("fx-shake"); void w.offsetWidth; w.classList.add("fx-shake");
     setTimeout(function () { w.classList.remove("fx-shake"); }, 500);
@@ -101,7 +121,8 @@ var FX = (function () {
     cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
     document.body.appendChild(cv);
     var c = cv.getContext("2d"); c.scale(dpr, dpr);
-    var cols = ["#ff4757", "#46cf9f", "#c7ccd8", "#ffd166", "#ffffff"], ps = [];
+    var cs = getComputedStyle(document.body), cv2 = function (n, d) { return (cs.getPropertyValue(n) || "").trim() || d; };
+    var cols = [cv2("--accent", "#e7c88e"), cv2("--accent-2", "#9fb4d9"), cv2("--ok", "#46cf9f"), "#ffffff", "#ffd98a"], ps = [];
     for (var i = 0; i < (amount || 140); i++) ps.push({
       x: innerWidth / 2 + (Math.random() - .5) * innerWidth * .4, y: innerHeight * .35,
       vx: (Math.random() - .5) * 14, vy: -Math.random() * 13 - 4, s: 5 + Math.random() * 6,
@@ -149,8 +170,15 @@ var FX = (function () {
     else play("end");
   }
 
-  document.addEventListener("DOMContentLoaded", soundButton);
-  if (document.readyState !== "loading") soundButton();
+  function atmosphere() {
+    if (reduce || document.querySelector(".atmo")) return;
+    var a = document.createElement("div"); a.className = "atmo"; a.setAttribute("aria-hidden", "true"); var h = "";
+    for (var i = 0; i < 26; i++) h += '<i style="left:' + (Math.random() * 100).toFixed(1) + '%;top:' + (20 + Math.random() * 80).toFixed(1) + '%;--s:' + (1.5 + Math.random() * 2.5).toFixed(1) + 'px;--t:' + (7 + Math.random() * 9).toFixed(1) + 's;--d:-' + (Math.random() * 12).toFixed(1) + 's;--x:' + ((Math.random() - .5) * 80).toFixed(0) + 'px"></i>';
+    a.innerHTML = h; document.body.insertBefore(a, document.body.firstChild);
+  }
+  function init() { soundButton(); atmosphere(); }
+  document.addEventListener("DOMContentLoaded", init);
+  if (document.readyState !== "loading") init();
 
-  return { play: play, timer: timer, points: points, shake: shake, confetti: confetti, stars: stars, reveal: reveal, finish: finish, reduce: reduce };
+  return { play: play, timer: timer, points: points, shake: shake, crack: crack, confetti: confetti, stars: stars, reveal: reveal, finish: finish, reduce: reduce };
 })();

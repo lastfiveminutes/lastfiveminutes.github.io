@@ -64,3 +64,10 @@ body[data-page="speaking"] .wrap{max-width:1240px}
 .turn,.charcard,.podium .first{font-family:var(--font-title);text-transform:none;font-weight:700;letter-spacing:0}
 .turn{font-size:clamp(38px,6vw,60px);line-height:1}
 .topic{font-family:var(--font-title);font-weight:700;font-size:34px;line-height:1.1}
+
+/* v6: show colours follow the poster */
+.rewind-btn{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 85%,#fff),var(--accent));color:var(--accent-ink);box-shadow:0 6px 0 rgba(0,0,0,.35),0 0 30px var(--glow)}
+.rewind-btn:active:not(:disabled){box-shadow:0 2px 0 rgba(0,0,0,.35)}
+.big-clock.warn{color:var(--warn)}
+.tok{background:var(--accent)}
+.brow.now{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset,0 0 20px var(--accent-soft)}

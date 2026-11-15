@@ -78,7 +78,7 @@ $("gateForm").onsubmit=function(e){
   S=fresh();S.name=n;S.attempt=attempts()+1;store("-attempts",S.attempt);
   S.started=true;S.startedAt=Date.now();
   hideGate();renderScore();renderToken();flash();FX.play("start");onStart();save();
-  var first=document.querySelector("[data-first]");if(first)first.scrollIntoView({behavior:"smooth",block:"start"});
+  window.scrollTo({top:0,behavior:"auto"});
 };
 document.addEventListener("visibilitychange",function(){if(document.hidden&&S&&S.started&&!S.finished){S.left++;save()}});
 

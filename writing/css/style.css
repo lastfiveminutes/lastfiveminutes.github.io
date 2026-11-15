@@ -674,3 +674,162 @@ blockquote{background:rgba(10,14,25,.75);border-left-color:var(--gold);font-fami
 @media (prefers-reduced-motion:reduce){.rain,.poster .dust{animation:none}}
 
 @media (max-width:560px){.bar .brand .brand-txt{display:inline}}
+
+/* ===== v6: every page wears its poster (colours, light, background) ===== */
+body{
+  --bg:#0a0e19;--bg-rgb:10,14,25;--panel-rgb:20,26,42;
+  --accent:#e7c88e;--accent-2:#9fb4d9;--accent-ink:#1f1708;--accent-soft:rgba(231,200,142,.14);--glow:rgba(231,200,142,.38);
+  --title:#f3e9d6;--warn:#ffb347;--bad:#f08a96;--btn-bg:#f3e9d6;--btn-ink:#1b1a22;
+  --alarm:var(--accent);--gold:var(--accent);--cream:var(--title);
+  background:var(--bg);
+}
+body[data-page="listening"]{--accent:#a9c7ff;--accent-2:#ff6b7d;--accent-ink:#0a1530;--accent-soft:rgba(169,199,255,.13);--glow:rgba(169,199,255,.4);--title:#e9eef8}
+body[data-page="speaking"]{--accent:#f4b971;--accent-2:#9cb7da;--accent-ink:#2a1606;--accent-soft:rgba(244,185,113,.15);--glow:rgba(244,185,113,.4);--title:#fbeedc}
+/* Writing: light watercolour, like its poster */
+body[data-page="writing"]{
+  --bg:#efe6d8;--bg-rgb:239,230,216;--panel-rgb:252,248,241;
+  --ink:#fffaf3;--panel:#fbf6ee;--panel-2:#f1e8da;--line:#d8cab4;--text:#2e3340;--muted:#646b7a;--steel:#5f7396;
+  --accent:#a5603b;--accent-2:#5f7396;--accent-ink:#ffffff;--accent-soft:rgba(165,96,59,.10);--glow:rgba(231,180,143,.45);
+  --title:#36435f;--ok:#23845f;--bad:#c4485a;--warn:#c76a1c;--btn-bg:#3f4f6e;--btn-ink:#ffffff;
+  color-scheme:light;
+}
+
+/* the poster stays visible behind the game: sharp on the right, fading into the page */
+body::before{inset:0;transform:none;filter:saturate(1.05);opacity:1;background:url(../img/poster.jpg) right top/auto 100% no-repeat}
+body::after{background:
+  radial-gradient(700px 420px at 82% 18%,var(--accent-soft),transparent 70%),
+  linear-gradient(90deg,var(--bg) 0%,var(--bg) 34%,rgba(var(--bg-rgb),.72) 58%,rgba(var(--bg-rgb),.18) 100%),
+  linear-gradient(180deg,rgba(var(--bg-rgb),0) 55%,var(--bg) 100%)}
+@media (max-width:999px){
+  body::before{background-size:cover;background-position:center top}
+  body::after{background:linear-gradient(180deg,rgba(var(--bg-rgb),.30) 0,rgba(var(--bg-rgb),.80) 340px,rgba(var(--bg-rgb),.94) 620px,var(--bg) 900px)}
+}
+
+/* floating light motes (added by fx.js) */
+.atmo{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.atmo i{position:absolute;width:var(--s);height:var(--s);border-radius:50%;background:var(--accent);opacity:0;box-shadow:0 0 8px var(--accent);animation:mote var(--t) ease-in-out var(--d) infinite}
+@keyframes mote{0%{opacity:0;transform:translate(0,0)}20%{opacity:.75}80%{opacity:.5}100%{opacity:0;transform:translate(var(--x),-120px)}}
+body[data-page="writing"] .atmo i{background:#fff6e2;box-shadow:0 0 10px #f5c9a2}
+
+/* rain is part of the Listening poster */
+.rain{opacity:.32}
+
+/* broken glass on a mistake (added by fx.js) */
+.fx-crack{position:fixed;inset:0;width:100%;height:100%;z-index:125;pointer-events:none;animation:crack .9s ease-out forwards}
+.fx-crack path{fill:none;stroke:rgba(255,255,255,.85);stroke-width:1.3;stroke-linecap:round;filter:drop-shadow(0 0 2px rgba(0,0,0,.6))}
+body[data-page="writing"] .fx-crack path{stroke:rgba(54,67,95,.75);filter:none}
+@keyframes crack{0%{opacity:0}10%{opacity:1}65%{opacity:1}100%{opacity:0}}
+
+/* glass panels in the page colours */
+.panel,.gate{background:linear-gradient(180deg,rgba(var(--panel-rgb),.90),rgba(var(--panel-rgb),.95));border-color:var(--line)}
+.gate{border-color:var(--accent);box-shadow:0 24px 60px rgba(0,0,0,.30),0 0 0 1px var(--accent-soft) inset}
+.result{background:rgba(var(--panel-rgb),.96)}
+.bar{background:rgba(var(--bg-rgb),.84)}
+.lead{color:var(--muted)}
+blockquote,.starter{background:rgba(var(--bg-rgb),.55);border-left-color:var(--accent);color:var(--title)}
+.brand,.hero h1,.panel h2,.gate h2,.tagline{color:var(--title)}
+.brand em,.hero h1 span,.kicker,.room-tag,.phase-tag{color:var(--accent)}
+.hero h1{text-shadow:0 4px 30px rgba(var(--bg-rgb),.7),0 0 40px var(--accent-soft)}
+#doneCard h2{color:var(--ok)}
+.btn.red{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 88%,#fff),var(--accent));color:var(--accent-ink);box-shadow:0 6px 18px var(--accent-soft),0 0 0 1px rgba(255,255,255,.12) inset}
+.btn.red:hover{filter:brightness(1.06)}
+.btn:not(.red):not(.line){background:var(--btn-bg);color:var(--btn-ink)}
+.btn.line{border-color:var(--line);color:var(--text)}
+.btn.red:disabled{background:var(--panel-2);color:var(--muted);border:1px dashed var(--line);box-shadow:none}
+.token-dot{background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.tchip.warn{border-color:var(--warn);color:var(--warn)}
+.tline{background:var(--accent);box-shadow:0 0 12px var(--accent)}
+::selection{background:var(--accent);color:var(--accent-ink)}
+.modal-box{border-color:var(--bad)}
+.modal-box h3{color:var(--bad)}
+.fx-card{background:linear-gradient(180deg,rgba(var(--panel-rgb),.98),rgba(var(--panel-rgb),.94));border-color:var(--accent);box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 60px var(--glow)}
+.fx-big{color:var(--accent)}
+.fx-title{color:var(--title)}
+.fx-stars span{color:var(--line)}
+.poster img{box-shadow:0 0 0 1px var(--accent-soft),0 30px 70px rgba(0,0,0,.55),0 0 70px var(--glow)}
+.poster{width:300px}
+.gate li::before{border-color:var(--accent);box-shadow:inset 0 0 0 3px var(--panel-2),inset 0 0 0 8px var(--accent)}
+
+/* reading */
+.door.now{box-shadow:0 0 0 1px var(--accent) inset,0 8px 24px rgba(0,0,0,.35),0 0 24px var(--accent-soft)}
+
+/* listening: blue rain, police lights only while a clip plays */
+.play{background:var(--accent);color:var(--accent-ink);box-shadow:0 6px 18px var(--glow)}
+.play:disabled{background:var(--panel-2);color:var(--muted)}
+@keyframes ring{0%{box-shadow:0 0 0 0 var(--glow)}100%{box-shadow:0 0 0 16px transparent}}
+.evidence.is-playing{animation:siren 1.2s steps(2) infinite}
+@keyframes siren{0%{border-color:var(--accent-2);box-shadow:0 0 22px rgba(255,107,125,.25)}50%{border-color:var(--accent);box-shadow:0 0 22px rgba(169,199,255,.3)}}
+.eq i{background:var(--accent)}
+.lockmsg{background:var(--accent-soft);border:1px dashed var(--accent);color:var(--text)}
+
+/* the floating timer is the silver pocket watch from the posters */
+.ftimer{width:124px;height:124px;padding:7px;background:conic-gradient(from 210deg,#f6f6f8,#8e95a3,#e9eaee,#717786,#f6f6f8);
+  box-shadow:0 16px 36px rgba(0,0,0,.5),0 0 30px var(--glow),inset 0 0 0 1px rgba(255,255,255,.6)}
+.ftimer::before{top:-14px;width:24px;height:13px;background:linear-gradient(#f6f6f8,#8e95a3);border-radius:5px 5px 2px 2px;box-shadow:0 -5px 0 -2px #c9ccd4}
+.ftimer::after{content:"";position:absolute;z-index:0;inset:7px;border-radius:50%;background:radial-gradient(circle at 38% 30%,#283150,#0d1222 72%);box-shadow:inset 0 2px 10px rgba(0,0,0,.6)}
+.ftimer svg{inset:15px;width:calc(100% - 30px);height:calc(100% - 30px);z-index:1}
+.ftimer .trk{stroke:rgba(255,255,255,.10);stroke-width:3.5}
+.ftimer .arc{stroke:var(--accent);stroke-width:3.5;filter:drop-shadow(0 0 3px var(--glow))}
+.ftimer .ft-in{z-index:2}
+.ftimer .ft-time{font-size:25px;color:#f3efe6;letter-spacing:.02em}
+.ftimer .ft-label{font-size:8px;margin-top:4px;color:#aeb4c4}
+.ftimer.warn{animation:tpulse 1s ease-in-out infinite}
+.ftimer.warn .arc{stroke:var(--warn)}
+.ftimer.warn .ft-time{color:var(--warn)}
+@keyframes tpulse{50%{box-shadow:0 16px 36px rgba(0,0,0,.5),0 0 0 4px var(--warn),0 0 34px var(--warn)}}
+
+/* anchors land below the sticky bar */
+section,.evidence,#builder{scroll-margin-top:84px}
+
+/* ---- Writing on light paper ---- */
+body[data-page="writing"] .hero h1{text-shadow:0 2px 24px rgba(255,255,255,.7)}
+body[data-page="writing"] .bar{box-shadow:0 1px 0 var(--line)}
+body[data-page="writing"] .diary{box-shadow:inset 6px 0 0 #d9a3a7,0 14px 34px rgba(80,60,40,.18);background:#fffdf8}
+body[data-page="writing"] .tile{background:#fffdf8;color:#2e3340;box-shadow:0 4px 0 #cdbfa8,0 0 0 1px #e1d5c2 inset}
+body[data-page="writing"] .tile:hover:not(:disabled){box-shadow:0 6px 0 #cdbfa8,0 0 0 1px #e1d5c2 inset}
+body[data-page="writing"] .tile.in{background:#3f4f6e;color:#fff;box-shadow:0 4px 0 #26324a}
+body[data-page="writing"] .tile.used{opacity:.25}
+body[data-page="writing"] .answer-line{background:rgba(255,255,255,.65)}
+body[data-page="writing"] .bdots span.ok{color:#fff}
+body[data-page="writing"] .opt.right,body[data-page="writing"] .stat{background:#fffdf8}
+body[data-page="writing"] .result{border-color:var(--ok)}
+body[data-page="writing"] .modal{background:rgba(40,36,30,.55)}
+body[data-page="writing"] .gate{box-shadow:0 20px 50px rgba(80,60,40,.18)}
+body[data-page="writing"] .poster img{box-shadow:0 0 0 1px #e6dccb,0 26px 60px rgba(80,60,40,.30),0 0 60px var(--glow)}
+body[data-page="writing"] .postit{box-shadow:0 10px 24px rgba(80,60,40,.30)}
+body[data-page="writing"] .ending .s-bad{color:var(--muted)}
+
+@media (max-width:760px){
+  .poster{width:auto}
+  .poster::after{background:linear-gradient(180deg,transparent 45%,var(--bg))}
+}
+@media (max-width:560px){
+  .ftimer{width:98px;height:98px;padding:6px}
+  .ftimer::after{inset:6px}
+  .ftimer svg{inset:12px;width:calc(100% - 24px);height:calc(100% - 24px)}
+  .ftimer .ft-time{font-size:20px}
+  .ftimer .ft-label{display:none}
+}
+@media (prefers-reduced-motion:reduce){.atmo,.fx-crack,.evidence.is-playing{animation:none}.atmo{display:none}}
+
+/* v6 fixes: hide the poster's own printed title in the background, glass under the dialog, icon colours */
+body::before{background-size:auto 118%;background-position:right bottom}
+@media (max-width:999px){body::before{background-size:auto 118%;background-position:center bottom}
+  .started::after{background:linear-gradient(180deg,rgba(var(--bg-rgb),.72) 0,rgba(var(--bg-rgb),.88) 300px,var(--bg) 700px)}}
+.fx-crack{z-index:85}
+.ghost.snd{display:inline-grid;place-items:center;color:var(--text)}
+.ghost.snd svg{width:18px;height:18px}
+.ghost.snd[aria-pressed="false"]{color:var(--muted)}
+
+/* v6: diary rows on phones: sentence full width, Check under it on the right */
+@media (max-width:560px){
+  .dline{grid-template-columns:24px 1fr;row-gap:2px}
+  .dchk{grid-column:2;justify-self:end;min-height:36px;min-width:72px}
+}
+
+/* v6: remaining headings in the poster serif */
+.ev-head h4,.panel h3,.rv h5{font-family:var(--font-title);text-transform:none;font-weight:700;letter-spacing:0;color:var(--title)}
+.ev-head h4{font-size:26px;line-height:1.1}
+.panel h3{font-size:28px}
+.rv h5{font-size:22px}
+.ev-count{vertical-align:4px}
