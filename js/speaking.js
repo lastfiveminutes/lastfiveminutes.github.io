@@ -51,6 +51,9 @@ function drawClock(){
   var r=G.phase==="running"?remaining():(G.mode==="hot"?HOT_TIME:RW_TIME);
   $("tTime").textContent=G.started?r:"--";
   $("tChip").classList.toggle("warn",G.phase==="running"&&r<=10);
+  var tot=G.mode==="hot"?HOT_TIME:RW_TIME,rs=document.documentElement.style;
+  rs.setProperty("--turn-p",r/tot);rs.setProperty("--clock-p",G.phase==="running"?r/tot:0);
+  var tb=$("bigClock");if(tb)tb.classList.toggle("warn",G.phase==="running"&&r<=10);
   var c=$("bigClock");if(c)c.textContent=r;
 }
 function runClock(){clearInterval(tick);tick=setInterval(function(){drawClock();if(remaining()<=0){clearInterval(tick);tick=null;flash();timeUp()}},200);drawClock()}
@@ -136,6 +139,8 @@ function render(){
   var on=G.started&&!G.finished;
   $("setup").hidden=G.started;$("boardSec").hidden=!G.started;$("stage").hidden=!on;$("voteSec").hidden=!G.started;$("endGame").hidden=!on;
   $("final").hidden=!G.finished;
+  document.body.classList.toggle("started",!!G.started);document.body.classList.toggle("finished",!!G.finished);
+  document.body.classList.toggle("running",G.phase==="running"&&!G.finished);
   if(!G.started){drawClock();return}
   renderBoard();renderVote();
   if(G.finished){renderFinal();return}
@@ -157,9 +162,9 @@ function render(){
     if(G.phase==="ready")h+='<div class="row" style="margin-top:12px"><button class="btn line" id="passBtn" type="button"'+(t.token?"":" disabled")+'>'+(t.token?"Use our Rewind token: new card":"Rewind token already used")+'</button></div>';
     h+='</div><div class="card">';
     if(G.phase==="ready"){
-      h+='<div class="big-clock" id="bigClock">'+(G.mode==="hot"?HOT_TIME:RW_TIME)+'</div><p class="note">The turn starts when you press the button. It can\'t be paused.</p><button class="btn red" id="goBtn" type="button" style="width:100%">Start '+(G.mode==="hot"?"90":"60")+' seconds</button>';
+      h+='<div class="big-clock" id="bigClock">'+(G.mode==="hot"?HOT_TIME:RW_TIME)+'</div><div class="tbar" aria-hidden="true"><i></i></div><p class="note">The turn starts when you press the button. It can\'t be paused.</p><button class="btn red" id="goBtn" type="button" style="width:100%">Start '+(G.mode==="hot"?"90":"60")+' seconds</button>';
     } else if(G.phase==="running"){
-      h+='<div class="big-clock" id="bigClock">'+remaining()+'</div>';
+      h+='<div class="big-clock" id="bigClock">'+remaining()+'</div><div class="tbar" aria-hidden="true"><i></i></div>';
       if(G.mode==="rewind")h+='<button class="rewind-btn" id="rwBtn" type="button">REWIND!</button><div class="rw-count">Rewinds: '+G.rewinds+' of '+MAX_RW+(G.rewinds?' · start again and change one detail!':'')+'</div>';
       else h+='<div class="row" style="margin-top:12px"><button class="btn" id="goodBtn" type="button">Good answer +30</button><button class="btn line" id="skipBtn" type="button">Skip question</button></div>';
     } else if(G.phase==="scoring"){

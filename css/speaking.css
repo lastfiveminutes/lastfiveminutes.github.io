@@ -33,3 +33,29 @@
 .rules b{color:var(--text)}
 @media (max-width:760px){.stage-grid{grid-template-columns:1fr}.teams-in{grid-template-columns:1fr}}
 @media (max-width:560px){.brow{grid-template-columns:26px 1fr 60px;gap:8px;padding:10px}.brow .vbar{display:none}.brow .sc{font-size:26px}.big-clock{font-size:72px}.rewind-btn{font-size:32px}.charcard{font-size:32px}}
+
+/* ===== v3: show layout (stage first, scores at the side) ===== */
+body[data-page="speaking"] .wrap{max-width:1240px}
+.show{display:grid;gap:18px;align-items:start}
+.show-main,.show-side{display:grid;gap:18px;align-content:start;min-width:0}
+#final{margin-top:0}
+.started .hero h1{font-size:clamp(34px,4.5vw,54px)}
+.big-clock{transition:color .2s}
+.big-clock.warn{color:var(--alarm)}
+.tbar{height:8px;background:var(--panel-2);border-radius:4px;overflow:hidden;margin:8px 0 6px}
+.tbar i{display:block;height:100%;width:calc(var(--turn-p,1) * 100%);background:var(--alarm);transition:width .2s linear}
+.running .stage-grid .card:last-child{border-color:var(--alarm)}
+.topic{min-height:0}
+#voteSec .lead{font-size:15px}
+@media (min-width:1000px){
+  .show{grid-template-columns:minmax(0,1fr) 330px}
+  .show-side{position:sticky;top:78px}
+  .show-side .brow{grid-template-columns:26px 1fr 56px;padding:8px 12px;gap:8px}
+  .show-side .brow .vbar{display:none}
+  .show-side .brow .sc{font-size:26px}
+  .show-side .brow .rk{font-size:22px}
+  .show-side .vote-row{grid-template-columns:1fr 32px;gap:6px 10px}
+  .show-side .vote-row .vbar{grid-column:1 / -1;grid-row:2;height:8px}
+  .show-side h3{font-size:22px}
+  .running #voteSec{opacity:.45}
+}

@@ -13,6 +13,7 @@ function fmtDate(ts){try{return new Date(ts).toLocaleString()}catch(e){return ""
 function renderScore(pop){var el=$("score");el.textContent=S.score;if(pop){el.classList.remove("score-pop");void el.offsetWidth;el.classList.add("score-pop")}}
 function addScore(n){S.score=Math.max(0,S.score+n);renderScore(true)}
 function renderToken(){$("tokenChip").classList.toggle("token-used",!S.token);$("tokenText").textContent=S.token?"Rewind ready":"Rewind used"}
+function pageState(){var b=document.body;b.classList.toggle("started",!!(S&&S.started));b.classList.toggle("finished",!!(S&&S.finished))}
 function flash(){var f=$("flash");f.classList.remove("go");void f.offsetWidth;f.classList.add("go")}
 
 /* ---- dialog ---- */
@@ -41,8 +42,9 @@ function drawClock(sec,label){
   if(label){$("tLabel").textContent=label;$("dialLabel").textContent=label}
   $("tChip").classList.toggle("warn",sec>0&&sec<=60&&!!tick);
   $("dial").style.setProperty("--p",clockTotal?sec/clockTotal:1);
+  document.documentElement.style.setProperty("--clock-p",clockTotal&&tick?sec/clockTotal:0);
 }
-function stopClock(){clearInterval(tick);tick=null;$("tChip").classList.remove("warn")}
+function stopClock(){clearInterval(tick);tick=null;$("tChip").classList.remove("warn");document.documentElement.style.setProperty("--clock-p",0)}
 function runClock(total,label,onEnd){
   stopClock();clockTotal=total;
   tick=setInterval(function(){var r=remaining();drawClock(r);if(r<=0){stopClock();flash();onEnd()}},250);
@@ -55,18 +57,19 @@ function showGate(){
   $("gate").hidden=false;$("playerChip").hidden=true;$("doneCard").hidden=true;$("restart").hidden=true;
   var a=attempts();$("attemptNote").textContent=a?"This device has started this game "+a+" time"+(a===1?"":"s")+". Your teacher can see the attempt number.":"";
   $("startBtn").disabled=$("nameIn").value.trim().length<2;
+  pageState();
 }
-function hideGate(){$("gate").hidden=true;$("playerChip").hidden=false;$("playerName").textContent=S.name;$("doneCard").hidden=true;$("restart").hidden=!!S.finished}
+function hideGate(){$("gate").hidden=true;$("playerChip").hidden=false;$("playerName").textContent=S.name;$("doneCard").hidden=true;$("restart").hidden=!!S.finished;pageState()}
 function confirmAgain(){ask("Play again?","A new attempt starts. Your teacher will see that this is attempt "+(attempts()+1)+".","Yes, play again","Cancel",tryAgain,null)}
 function afterResult(){
-  $("restart").hidden=true;$("doneCard").hidden=false;
+  $("restart").hidden=true;$("doneCard").hidden=false;pageState();
   $("doneMeta").textContent=S.name+" · Attempt "+S.attempt+" · Score "+S.score+" · "+fmtDate(S.finishedAt);
   var a=$("again");if(a)a.onclick=confirmAgain;
 }
 $("againTop").onclick=confirmAgain;
 $("seeResult").onclick=function(){$("result").scrollIntoView({behavior:"smooth",block:"start"})};
 $("restart").onclick=function(){ask("Start over?","This game stops now and a new attempt starts. Your teacher will see that this is attempt "+(attempts()+1)+".","Yes, start over","Keep playing",function(){if(typeof stopAudio==="function")stopAudio();tryAgain()},null)};
-$("nameIn").addEventListener("input",function(){$("startBtn").disabled=this.value.trim().length<2});
+$("nameIn").addEventListener("input",function(){var ok=this.value.trim().length>=2;$("startBtn").disabled=!ok;var h=$("startHint");if(h)h.textContent=ok?"Ready? The clock starts as soon as you press the button.":"Write your name to unlock the button. The clock starts right away."});
 $("gateForm").onsubmit=function(e){
   e.preventDefault();var n=$("nameIn").value.trim().replace(/\s+/g," ");
   if(n.length<2){$("nameIn").focus();return}

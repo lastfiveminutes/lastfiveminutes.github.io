@@ -59,19 +59,20 @@ function renderEvidence(){
   var live=S.started&&!S.finished;
   $("evidence").classList.toggle("locked",!S.started);
   $("evidence").innerHTML=EVIDENCE.map(function(ev,k){
-    var left=playsLeft(k),open=live&&heard(k);
+    var left=playsLeft(k),open=live&&heard(k),showQs=open||S.finished||!live,done=0;
+    ev.qs.forEach(function(q,j){if(S.ans[k+"-"+j])done++});
     var qs=ev.qs.map(function(q,j){
       var a=S.ans[k+"-"+j];
       return '<div class="lq"><p class="q">'+(j+1)+'. '+esc(q.q)+'</p><div class="opts">'+q.opts.map(function(o,i){
         var cls="";if(a&&a.p===i)cls=a.ok?" right":" picked-wrong";
         return '<button class="opt'+cls+'" type="button" data-k="'+k+'" data-j="'+j+'" data-i="'+i+'"'+(!open||a?" disabled":"")+'>'+esc(o)+'</button>'}).join("")+'</div></div>';
     }).join("");
-    var status=playing===k?"Playing...":(synth?(left>0?"Plays left: <b>"+left+"</b>":"No plays left"):"");
+    var status=playing===k?'<span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Playing...':(synth?(left>0?"Plays left: <b>"+left+"</b>":"No plays left"):"");
     var fallback=!synth?'<div class="transcript on">'+ev.lines.map(function(l){return '<p><b>'+esc(l.who)+':</b> '+esc(l.t)+'</p>'}).join("")+'</div>':"";
-    return '<div class="evidence"'+(k===0?' data-first':'')+'><div class="ev-head"><h4>'+esc(ev.title)+'</h4>'+
+    return '<div class="evidence'+(playing===k?' is-playing':'')+(done===ev.qs.length?' is-done':'')+'"><div class="ev-head"><h4>'+esc(ev.title)+' <span class="ev-count">'+done+' / '+ev.qs.length+'</span></h4>'+
       (synth?'<span class="plays">'+status+'</span><button class="play" type="button" data-play="'+k+'" aria-label="Play '+esc(ev.title)+'"'+(!live||playing>=0||left<=0?" disabled":"")+'>▶</button>':'')+
       '</div><div class="speaking" id="spk'+k+'"></div>'+fallback+
-      (live&&!heard(k)?'<p class="lockmsg">Listen to the audio first. Then the questions unlock.</p>':'')+qs+'</div>';
+      (live&&!heard(k)?'<p class="lockmsg">🔒 Press ▶ and listen first. Then the 3 questions appear.</p>':'')+(showQs?qs:'')+'</div>';
   }).join("");
   document.querySelectorAll("[data-play]").forEach(function(b){b.onclick=function(){play(+b.getAttribute("data-play"))}});
   document.querySelectorAll("#evidence .opt").forEach(function(b){b.onclick=function(){answer(+b.dataset.k,+b.dataset.j,+b.dataset.i)}});

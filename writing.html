@@ -15,13 +15,14 @@
 <body data-page="writing">
 <div class="bar">
   <div class="wrap">
-    <a class="brand" href="index.html" title="All games">The Last Five Minutes · Writing</a>
+    <a class="brand" href="index.html" title="All games" aria-label="All games"><svg class="home-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span class="brand-txt">The Last Five Minutes · <em>Writing</em></span></a>
     <span class="chip tchip" id="tChip"><span id="tLabel">Clock</span> <b id="tTime">--:--</b></span>
     <span class="chip" id="playerChip" hidden><span id="playerName"></span></span>
     <span class="chip">Score <b id="score">0</b></span>
-    <span class="chip" id="tokenChip"><span class="token-dot"></span><span id="tokenText">Rewind ready</span></span>
-    <button class="ghost" id="restart" type="button" hidden>Start over</button>
+    <span class="chip" id="tokenChip" title="Your Rewind: one per game"><span class="token-dot"></span><span id="tokenText">Rewind ready</span></span>
+    <button class="ghost" id="restart" type="button" hidden aria-label="Start over"><span class="ico" aria-hidden="true">↺</span><span class="lbl">Start over</span></button>
   </div>
+  <span class="tline" aria-hidden="true"></span>
 </div>
 
 <div class="wrap">
@@ -43,6 +44,7 @@
       <input type="text" id="nameIn" placeholder="Write your full name" autocomplete="off" maxlength="40">
       <button class="btn red" id="startBtn" type="submit" disabled>Start the clock</button>
     </form>
+    <p class="hint" id="startHint">Write your name to unlock the button. The clock starts right away.</p>
     <p class="meta" id="attemptNote"></p>
   </section>
 
@@ -52,10 +54,11 @@
     <div class="row">
       <button class="btn red" id="againTop" type="button">Play again</button>
       <button class="btn line" id="seeResult" type="button">See my result</button>
+      <a class="btn line" href="index.html">All games</a>
     </div>
   </section>
 
-  <section class="panel" id="diarySec" data-first>
+  <section class="panel game-area" id="diarySec" data-first>
     <div class="phase-tag" id="diaryTag">Locked</div>
     <h2>Mission 1 · Complete the diary</h2>
     <p class="lead">Write the past simple of each verb and press "Check" (or Enter). You get one try for each verb. Each correct verb gives you 20 points.</p>
@@ -67,7 +70,7 @@
     <div class="row" style="margin-top:14px"><button class="btn" id="diaryNext" type="button">I finished · go to Mission 2</button></div>
   </section>
 
-  <section class="panel" id="storySec" style="margin-top:18px">
+  <section class="panel game-area" id="storySec">
     <div class="phase-tag" id="storyTag">Locked</div>
     <h2>Mission 2 · What if the watch didn't break?</h2>
     <p class="lead">Write a new ending for the story in 5 minutes. Write at least 30 words. Each mission word gives you 10 points, and 50 words or more give you 30 extra points. When the clock reaches zero, your story is sent automatically.</p>
@@ -79,6 +82,7 @@
       <button class="btn red" id="storySubmit" type="button">Submit my story</button>
       <span class="note" id="wc">0 words</span>
     </div>
+    <div class="meter" aria-hidden="true"><i id="wcBar"></i><span class="mark" title="30 words"></span></div>
     <div class="feedback" id="storyFb"></div>
   </section>
   <section class="result" id="result" hidden></section>

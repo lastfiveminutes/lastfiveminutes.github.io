@@ -15,13 +15,14 @@
 <body data-page="listening">
 <div class="bar">
   <div class="wrap">
-    <a class="brand" href="index.html" title="All games">The Last Five Minutes · Listening</a>
+    <a class="brand" href="index.html" title="All games" aria-label="All games"><svg class="home-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span class="brand-txt">The Last Five Minutes · <em>Listening</em></span></a>
     <span class="chip tchip" id="tChip"><span id="tLabel">Clock</span> <b id="tTime">--:--</b></span>
     <span class="chip" id="playerChip" hidden><span id="playerName"></span></span>
     <span class="chip">Score <b id="score">0</b></span>
-    <span class="chip" id="tokenChip"><span class="token-dot"></span><span id="tokenText">Rewind ready</span></span>
-    <button class="ghost" id="restart" type="button" hidden>Start over</button>
+    <span class="chip" id="tokenChip" title="Your Rewind: one per game"><span class="token-dot"></span><span id="tokenText">Rewind ready</span></span>
+    <button class="ghost" id="restart" type="button" hidden aria-label="Start over"><span class="ico" aria-hidden="true">↺</span><span class="lbl">Start over</span></button>
   </div>
+  <span class="tline" aria-hidden="true"></span>
 </div>
 
 <div class="wrap">
@@ -43,6 +44,7 @@
       <input type="text" id="nameIn" placeholder="Write your full name" autocomplete="off" maxlength="40">
       <button class="btn red" id="startBtn" type="submit" disabled>Start the clock</button>
     </form>
+    <p class="hint" id="startHint">Write your name to unlock the button. The clock starts right away.</p>
     <p class="meta" id="attemptNote"></p>
   </section>
 
@@ -52,10 +54,12 @@
     <div class="row">
       <button class="btn red" id="againTop" type="button">Play again</button>
       <button class="btn line" id="seeResult" type="button">See my result</button>
+      <a class="btn line" href="index.html">All games</a>
+      <a class="btn line" href="writing.html">Next: Writing →</a>
     </div>
   </section>
 
-  <section class="panel">
+  <section class="panel game-area" data-first>
     <h2>The evidence</h2>
     <p class="lead">Press ▶ to listen. Each audio plays only <strong>two times</strong>, so listen carefully. The questions unlock after you listen. You get one try for each question.</p>
     <div class="row"><span class="chip" id="progress">0 / 9 answered</span></div>

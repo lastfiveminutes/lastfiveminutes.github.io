@@ -80,6 +80,7 @@ function renderRoom(){
     var i=+b.getAttribute("data-i"),n=pick.indexOf(i);if(n>=0)pick.splice(n,1);else pick.push(i);renderRoom()}});
   if($("ordCheck"))$("ordCheck").onclick=function(){var key=r+"-1";submit(key,pick.slice())};
   if($("ordClear"))$("ordClear").onclick=function(){pick=[];renderRoom()};
+  if($("nextRoom")&&!S.finished){var nb=$("nextRoom");setTimeout(function(){var r2=nb.getBoundingClientRect();if(r2.bottom>window.innerHeight-12)nb.scrollIntoView({behavior:"smooth",block:"center"})},350)}
   if($("nextRoom"))$("nextRoom").onclick=function(){S.room++;pick=[];save();flash();renderRoom();$("roomWrap").scrollIntoView({behavior:"smooth",block:"start"})};
 }
 function qOf(key){var p=key.split("-");return ROOMS[+p[0]].qs[+p[1]]}

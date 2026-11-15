@@ -69,6 +69,7 @@ function renderStory(){
 function renderWords(){
   var t=$("story").value,used=usedWords(t),n=wc(t);
   $("mWords").innerHTML=MWORDS.map(function(w){var u=used.indexOf(w)>=0;return '<span class="wchip'+(u?" used":"")+'">'+(u?"✓ ":"")+w+'</span>'}).join("");
+  var bar=$("wcBar");if(bar){bar.style.width=Math.min(100,n/BONUS_WORDS*100)+"%";bar.className=n>=BONUS_WORDS?"bonus":(n>=MIN_WORDS?"ok":"")}
   $("wc").textContent=n+(n===1?" word":" words")+(n<MIN_WORDS?" · minimum "+MIN_WORDS:n<BONUS_WORDS?" ✓ · "+BONUS_WORDS+" for the bonus":" ✓ bonus!");
 }
 var ta=$("story");
